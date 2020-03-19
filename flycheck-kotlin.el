@@ -38,18 +38,23 @@
 ;;; Code:
 (require 'flycheck)
 
-(flycheck-define-checker kotlin-ktlint
-  "A Kotlin syntax and style checker using the ktlint utility.
-See URL `https://github.com/shyiko/ktlint'."
-  :command ("ktlint" source)
-  :error-patterns
-  ((error line-start (file-name) ":" line ":" column ": " (message) line-end))
-  :modes kotlin-mode)
+(defvar flycheck-kotlin-error-level
+  'error
+  "Error level used in kotlin-ktlint")
 
 
 ;;;###autoload
 (defun flycheck-kotlin-setup ()
   "Setup Flycheck for Kotlin."
+  (eval
+   `(flycheck-define-checker kotlin-ktlint
+      "A Kotlin syntax and style checker using the ktlint utility.
+See URL `https://github.com/shyiko/ktlint'."
+      :command ("ktlint" source)
+      :error-patterns
+      ((,flycheck-kotlin-error-level
+        line-start (file-name) ":" line ":" column ": " (message) line-end))
+      :modes kotlin-mode))
   (add-to-list 'flycheck-checkers 'kotlin-ktlint))
 
 (provide 'flycheck-kotlin)
